@@ -1,43 +1,4 @@
-[21:27, 07/10/2025] Cristian Facul: import 'package:flutter/material.dart';
-void main() {
-  runApp(MaterialApp(
-    home: MyWidget(),
-  ));
-}
-
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text('Construindo Layouts'),),
-        body: meuLayoutWidget(),
-      ),
-    );
-  }
-Widget meuLayoutWidget() {
-  return Stack(
-    children: [
-      caixa1('oi'),
-      caixa2(),
-      Image.network('')
-      ],
-  );
-}
-Widget caixa1(texto) {
-  return Container(
-    margin: EdgeInsets.all(5),
-    padding: EdgeInsets.all(5),
-    alignment: Alignment.center,
-    height: 100,
-    width: 300,
-    decoration: BoxDecoration(
-      color: Colors.green,
-      border…
-[20:22, 21/10/2025] Cristian Facul: https://github.com/motherduckdb/metabase_duckdb_driver/releases
-[20:54, 21/10/2025] Cristian Facul: import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MeuApp());
