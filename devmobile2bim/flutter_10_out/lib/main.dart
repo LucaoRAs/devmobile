@@ -1,90 +1,120 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MeuApp());
+  runApp(const PrecoCombustivel());
 }
 
-class MeuApp extends StatefulWidget {
-  const MeuApp({super.key});
+class PrecoCombustivel extends StatefulWidget {
+  const PrecoCombustivel({super.key});
 
   @override
-  State<MeuApp> createState() => _MeuAppState();
+  State<PrecoCombustivel> createState() => _PrecoCombustivelState();
 }
 
-class _MeuAppState extends State<MeuApp> {
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: MeuFormulario());
+class _PrecoCombustivelState extends State<PrecoCombustivel> {
+  final TextEditingController gasolinaController = TextEditingController();
+  final TextEditingController alcoolController = TextEditingController();
+  final TextEditingController distanciaController = TextEditingController();
+
+  String resultado = '';
+
+  void calcular() {
+    double? precoGasolina = double.tryParse(gasolinaController.text);
+    double? precoAlcool = double.tryParse(alcoolController.text);
+    double? distancia = double.tryParse(distanciaController.text);
+
+    if (precoGasolina == null || precoAlcool == null || distancia == null) {
+      setState(() {
+        resultado = 'Preencha todos os campos corretamente!';
+      });
+      return;
+    }
+
+    double gastoGasolina = (distancia / 12) * precoGasolina;
+    double gastoAlcool = (distancia / 9) * precoAlcool;
+
+    String melhor = gastoGasolina < gastoAlcool ? 'Gasolina' : 'Álcool';
+
+    setState(() {
+      resultado =
+          'Gasto com Gasolina: R\$ ${gastoGasolina.toStringAsFixed(2)}\n'
+          'Gasto com Álcool: R\$ ${gastoAlcool.toStringAsFixed(2)}\n'
+          'Mais vantajoso: $melhor';
+    });
   }
-}
-
-class MeuFormulario extends StatefulWidget {
-  const MeuFormulario({super.key});
-
-  @override
-  State<MeuFormulario> createState() => _MeuFormularioState();
-}
-
-class _MeuFormularioState extends State<MeuFormulario> {
-  final _formKey = GlobalKey<FormState>();
-  final _scaffoldMsgKey = GlobalKey<ScaffoldMessengerState>();
-
-  final TextEditingController nomeController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: _scaffoldMsgKey,
       home: Scaffold(
-        appBar: AppBar(title: const Text("Exemplo de Formulário")),
+        appBar: AppBar(
+          title: const Text('Gasolina ou Álcool?'),
+          backgroundColor: Colors.orange,
+          centerTitle: true,
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  controller: nomeController,
-                  decoration: const InputDecoration(labelText: "Nome"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Por favor, insira seu nome";
-                    }
-                    return null;
-                  },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Icon(Icons.directions_car, size: 100, color: Colors.red),
+              const SizedBox(height: 20),
+
+              TextField(
+                controller: gasolinaController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Preço da Gasolina',
+                  border: OutlineInputBorder(),
                 ),
-                TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Por favor, insira seu email";
-                    }
-                    if (!value.contains('@')) {
-                      return "Email inválido";
-                    }
-                    return null;
-                  },
+              ),
+              const SizedBox(height: 10),
+
+              TextField(
+                controller: alcoolController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Preço do Álcool',
+                  border: OutlineInputBorder(),
                 ),
-                const SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _scaffoldMsgKey.currentState!.showSnackBar(
-                          const SnackBar(
-                            content: Text("Formulário enviado com sucesso!"),
-                          ),
-                        );
-                      }
-                    },
-                    child: const Text("Enviar"),
+              ),
+              const SizedBox(height: 10),
+
+              TextField(
+                controller: distanciaController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Distância a percorrer (km)',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: calcular,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 15,
                   ),
                 ),
-              ],
-            ),
+                child: const Text(
+                  'Calcular',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              Text(
+                resultado,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ),
       ),
